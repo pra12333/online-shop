@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\AdminMiddleware;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -39,7 +40,7 @@ Route::get('/purchases',[AuthController::class,'purchases'])->middleware('auth')
 
 
 
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     // Product routes (admin-only)
     Route::get('/products/create', [ProductController::class, 'createproduct'])->name('create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');

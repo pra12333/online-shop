@@ -53,7 +53,10 @@
             @if(Auth::check())
                 <span class="navbar-text">Welcome, {{ auth()->user()->name }}</span>
             @endif
-            <a href="{{ route('logout') }}" class="btn logout-btn">Logout</a>
+            <form action="{{ route('logout') }}" method="POST">
+          @csrf
+          <button type="submit" class="btn logout-btn">Logout</button>
+      </form>
         </div>
     </nav>
 
@@ -74,34 +77,51 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($purchases as $purchase)
-                    <tr>
-                        <td>
-                            <div class="product-item d-flex align-items-center">
-                                <a class="product-thumb" href="#">
-                                    <img src="{{ Storage::url($purchase->product->image) }}" alt="Product" style="width: 50px; height: 50px;">
-                                </a>
-                                <div class="product-info ml-3">
-                                    <h4 class="product-title">
-                                        <a href="#">{{ $purchase->product->productname }}</a>
-                                    </h4>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="text-center">{{ $purchase->quantity }}</td>
-                        <td class="text-center">${{ number_format($purchase->product->price, 2) }}</td>
-                        <td class="text-center">${{ number_format($purchase->quantity * $purchase->product->price, 2) }}</td>
-                        <td class="text-center">
-                            <a class="remove-from-cart" href="#" data-toggle="tooltip" title="Remove item">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center">No purchases found.</td>
-                    </tr>
-                    @endforelse
+                @forelse($purchases as $purchase)
+<tr>
+    <td>
+        <div class="product-item d-flex align-items-center">
+            @if($purchase->product)
+                <a class="product-thumb" href="#">
+                    <img src="{{ Storage::url($purchase->product->image) }}" alt="Product" style="width: 50px; height: 50px;">
+                </a>
+                <div class="product-info ml-3">
+                    <h4 class="product-title">
+                        <a href="#">{{ $purchase->product->productname }}</a>
+                    </h4>
+                </div>
+            @else
+                <span>Product not found</span>
+            @endif
+        </div>
+    </td>
+    <td class="text-center">{{ $purchase->quantity }}</td>
+    <td class="text-center">
+        @if($purchase->product)
+            ${{ number_format($purchase->product->price, 2) }}
+        @else
+            N/A
+        @endif
+    </td>
+    <td class="text-center">
+        @if($purchase->product)
+            ${{ number_format($purchase->quantity * $purchase->product->price, 2) }}
+        @else
+            N/A
+        @endif
+    </td>
+    <td class="text-center">
+        <a class="remove-from-cart" href="#" data-toggle="tooltip" title="Remove item">
+            <i class="fa fa-trash"></i>
+        </a>
+    </td>
+</tr>
+@empty
+<tr>
+    <td colspan="5" class="text-center">No purchases found.</td>
+</tr>
+@endforelse
+
                 </tbody>
             </table>
         </div>

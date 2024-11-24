@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -123,8 +124,9 @@ class ProductController extends Controller
             $product->save();
     
             // Create the order
+            
             Order::create([
-                'user_id' => 1, // Assuming you're using static user ID for now, replace with Auth::id() for logged-in users
+                'user_id' =>  Auth::id (),// Assuming you're using static user ID for now, replace with Auth::id() for logged-in users
                 'product_id' => $product->id,
                 'quantity' => $request->quantity,
             ]);
